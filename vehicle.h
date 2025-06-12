@@ -22,7 +22,7 @@ struct vehicle_info {
 	char golden_time;
 	
 	struct position position;
-	struct priority_semaphore **map_locks;
+	struct lock **map_locks;
 };
 
 void vehicle_loop(void *vi);
