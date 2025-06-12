@@ -91,7 +91,7 @@ void parse_vehicles(struct vehicle_info *vehicle_info, char *input) {
     }
 
     // 디버깅 출력
-    printf("=== Vehicle Info ===\n");
+    /*printf("=== Vehicle Info ===\n");
     for (int i = 0; i < idx; i++) {
         struct vehicle_info *vi = &vehicle_info[i];
         printf("Vehicle %c\n", vi->id);
@@ -103,7 +103,7 @@ void parse_vehicles(struct vehicle_info *vehicle_info, char *input) {
             printf("  Golden Time: %d\n", vi->golden_time);
         }
         printf("---------------------\n");
-    }
+    }*/
 }
 
 
@@ -118,19 +118,21 @@ static int try_move(int start, int dest, int step, struct vehicle_info *vi)
 	struct position pos_cur, pos_next;
 
 	pos_next = vehicle_path[start][dest][step];
-	printf("Vehicle %c trying step %d → (%d,%d)\n", vi->id, step, pos_next.row, pos_next.col);
+	//printf("Vehicle %c trying step %d → (%d,%d)\n", vi->id, step, pos_next.row, pos_next.col);
 
 	pos_cur = vi->position;
 
 	if (vi->state == VEHICLE_STATUS_RUNNING) {
 		/* check termination */
 		if (is_position_outside(pos_next)) {
-			printf("Vehicle %c reached end of path\n", vi->id);
+			//printf("Vehicle %c reached end of path\n", vi->id);
 
 			/* actual move */
 			vi->position.row = vi->position.col = -1;
 			/* release previous */
-			lock_release(&vi->map_locks[pos_cur.row][pos_cur.col]);
+			//lock_release(&vi->map_locks[pos_cur.row][pos_cur.col]);
+			lock_release_priority(&vi->map_locks[pos_cur.row][pos_cur.col]);
+
 			return 0;
 		}
 	}
