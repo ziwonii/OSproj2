@@ -10,6 +10,9 @@
 #include "projects/crossroads/ats.h"
 #include "projects/crossroads/priority_sync.h" //우선순위 락 지원
 
+#include "projects/crossroads/crossroads.h"   // extern int crossroads_step
+
+
 
 
 
@@ -161,7 +164,16 @@ void vehicle_loop(void *_vi)
 	int res;
 	int start, dest, step;
 
+	extern int crossroads_step;
+
 	struct vehicle_info *vi = _vi;
+
+	if (vi->type == VEHICL_TYPE_AMBULANCE && vi->arrival >= 0) {
+    	while (crossroads_step < vi->arrival) {
+			unitstep_changed();
+		}
+	}
+	int start_time = crossroads_step;
 
 	start = vi->start - 'A';
 	dest = vi->dest - 'A';
@@ -185,6 +197,19 @@ void vehicle_loop(void *_vi)
 		/* unitstep change! */
 		unitstep_changed();
 	}	
+
+    /* --- 도착 시점에 걸린 시간 체크 --- */
+    int finish_time = crossroads_step;
+    if (vi->type == VEHICL_TYPE_AMBULANCE) {
+        int took = finish_time - start_time;
+        if (took > vi->golden_time) {
+            printf("Ambulance %c FAILED: took %d > %d\n",
+        			vi->id, took, vi->golden_time);
+        } else {
+            printf("Ambulance %c OK: took %d <= %d\n",
+                   vi->id, took, vi->golden_time);
+        }
+    }
 
 	/* status transition must happen before sema_up */
 	vi->state = VEHICLE_STATUS_FINISHED;
