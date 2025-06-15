@@ -20,17 +20,15 @@ static struct blinker_info *g_blinkers;
 static int g_blinker_cnt = DIR_COUNT;
 
 /* 신호등 스케줄러 스레드: 매 unit step마다 다음 방향 녹색 불 */
-static void
-light_scheduler(void *aux UNUSED) {
+static void light_scheduler(void *aux UNUSED) {
     while (true) {
-        unitstep_changed();                  // 1초 대기 (ATS 내 보호됨)
+        unitstep_changed();                  
         g_current = (g_current + 1) % DIR_COUNT;  // 방향 순환
     }
 }
 
 /* 각 방향 블링커 스레드: 중앙 칸 락 제어 */
-static void
-blinker_thread(void *aux) {
+static void blinker_thread(void *aux) {
     struct blinker_info *b = aux;
     struct position pos = light_cell[b->dir];
     struct lock *ctrl = &b->map_locks[pos.row][pos.col];
@@ -53,8 +51,7 @@ blinker_thread(void *aux) {
 }
 
 /* 신호등 정보 초기화 */
-void
-init_blinker(struct blinker_info* blinkers,
+void init_blinker(struct blinker_info* blinkers,
              struct lock **map_locks,
              struct vehicle_info *vehicles) {
     g_blinkers = blinkers;
@@ -66,8 +63,7 @@ init_blinker(struct blinker_info* blinkers,
 }
 
 /* 스레드 시작: 스케줄러 + 각 방향 블링커 */
-void
-start_blinker(void) {
+void start_blinker(void) {
     thread_create("light-sched", PRI_DEFAULT,
                   light_scheduler, NULL);
 

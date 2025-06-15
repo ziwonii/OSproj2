@@ -3,7 +3,7 @@
 
 #include <list.h>
 #include "threads/thread.h"
-#include "threads/synch.h"  // 이 줄을 꼭 넣자
+#include "threads/synch.h" 
 
 struct vehicle_info; 
 

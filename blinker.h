@@ -14,7 +14,7 @@ extern enum direction g_current;
 #define NUM_BLINKER DIR_COUNT
 #endif
 
-/* 신호등이 제어할 중앙 칸 좌표 (extern 선언) */
+/* 신호등이 제어할 중앙 칸 좌표 */
 extern const struct position light_cell[DIR_COUNT];
 
 struct blinker_info {

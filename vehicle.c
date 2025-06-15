@@ -12,7 +12,7 @@
 #include "projects/crossroads/priority_sync.h"
 #include "projects/crossroads/blinker.h"  // extern enum direction g_current
 
-extern enum direction g_current;  // 신호등 현재 방향 (blinker.c에서 선언됨)
+extern enum direction g_current;  // 신호등 현재 방향
 
 /* 내부 스텝 동기화 */
 static struct lock      s_step_lock;
@@ -160,7 +160,7 @@ void vehicle_loop(void *_vi) {
 
         struct position next = vehicle_path[start][dest][moved_steps];
 
-        // 교차로 중앙 진입 시 → 신호등 방향 확인
+        // 교차로 중앙 진입 시 신호등 방향 확인
         if (is_central(next)) {
             enum direction my_dir = get_direction(vi->start);
             while (g_current != my_dir) {
